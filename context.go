@@ -853,7 +853,7 @@ func (c *Context) Cookie(name string) (string, error) {
 }
 
 // Render writes the response headers and calls render.Render to render data.
-func (c *Context) Render(code int, r render.Render) {
+func (c *Context) Render(code int, r render.Render) (err error) {
 	c.Status(code)
 
 	if !bodyAllowedForStatus(code) {
@@ -862,9 +862,11 @@ func (c *Context) Render(code int, r render.Render) {
 		return
 	}
 
-	if err := r.Render(c.Writer); err != nil {
-		panic(err)
+	if err = r.Render(c.Writer); err != nil {
+		return
 	}
+
+	return
 }
 
 // HTML renders the HTTP template specified by its file name.
